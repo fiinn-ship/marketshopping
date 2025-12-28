@@ -1,0 +1,910 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shop Marketing - Upgrade QRIS, Convert Saldo & Top Up</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #333;
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        /* Slide Styling */
+        .slide {
+            display: none;
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            margin-top: 20px;
+            min-height: 80vh;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            animation: slideIn 0.5s ease;
+        }
+        
+        .slide.active {
+            display: block;
+        }
+        
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        /* Header */
+        .header {
+            text-align: center;
+            padding: 25px 0;
+            margin-bottom: 30px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+        
+        .header h1 {
+            font-size: 2.8rem;
+            margin-bottom: 10px;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .header p {
+            color: #666;
+            font-size: 1.2rem;
+        }
+        
+        /* Product Cards */
+        .products {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 30px;
+            margin-top: 40px;
+        }
+        
+        .product-card {
+            background: #f9f9f9;
+            border-radius: 15px;
+            padding: 30px;
+            text-align: center;
+            transition: all 0.4s ease;
+            border: 2px solid transparent;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .product-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(102, 126, 234, 0.2);
+            border-color: #667eea;
+        }
+        
+        .product-icon {
+            font-size: 4rem;
+            margin-bottom: 25px;
+            color: #667eea;
+        }
+        
+        .product-title {
+            font-size: 1.9rem;
+            color: #333;
+            margin-bottom: 15px;
+        }
+        
+        .product-desc {
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 1.1rem;
+        }
+        
+        /* Buttons */
+        .btn {
+            display: inline-block;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            padding: 15px 35px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1.1rem;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+        }
+        
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.4);
+        }
+        
+        .btn-back {
+            background: linear-gradient(45deg, #8e9eab, #eef2f3);
+            color: #333;
+            margin-top: 30px;
+        }
+        
+        .btn-order {
+            margin: 15px 8px;
+            padding: 12px 25px;
+            font-size: 1rem;
+        }
+        
+        .btn-copy {
+            background: #4CAF50;
+            padding: 8px 15px;
+            font-size: 0.9rem;
+            margin-left: 10px;
+        }
+        
+        .btn-download {
+            background: #2196F3;
+            padding: 8px 15px;
+            font-size: 0.9rem;
+            margin-left: 5px;
+        }
+        
+        /* Payment Section */
+        .payment-methods {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+            margin-top: 40px;
+        }
+        
+        .payment-method {
+            background: #f9f9f9;
+            border-radius: 15px;
+            padding: 25px;
+            text-align: center;
+            border: 1px solid #e0e0e0;
+            transition: all 0.3s ease;
+        }
+        
+        .payment-method:hover {
+            border-color: #667eea;
+            transform: translateY(-5px);
+        }
+        
+        .payment-icon {
+            font-size: 3rem;
+            margin-bottom: 20px;
+            color: #667eea;
+        }
+        
+        .payment-method h3 {
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+            color: #333;
+        }
+        
+        .payment-number {
+            background: #fff;
+            padding: 12px;
+            border-radius: 8px;
+            margin: 15px 0;
+            font-family: monospace;
+            font-size: 1.2rem;
+            border: 1px solid #ddd;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .copy-buttons {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin-top: 15px;
+        }
+        
+        .qris-container {
+            margin-top: 20px;
+            text-align: center;
+        }
+        
+        .qris-image {
+            max-width: 100%;
+            height: auto;
+            border-radius: 10px;
+            border: 2px solid #e0e0e0;
+            transition: all 0.3s ease;
+            margin-top: 15px;
+        }
+        
+        .qris-image:hover {
+            transform: scale(1.02);
+        }
+        
+        /* WhatsApp Button */
+        .whatsapp-float {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background-color: #25D366;
+            color: white;
+            border-radius: 50%;
+            text-align: center;
+            font-size: 2.8rem;
+            box-shadow: 0 8px 25px rgba(37, 211, 102, 0.4);
+            z-index: 1000;
+            width: 70px;
+            height: 70px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(37, 211, 102, 0.7); }
+            70% { box-shadow: 0 0 0 15px rgba(37, 211, 102, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(37, 211, 102, 0); }
+        }
+        
+        .whatsapp-float:hover {
+            background-color: #128C7E;
+            transform: scale(1.1);
+            animation: none;
+        }
+        
+        /* Price List */
+        .price-list {
+            margin-top: 30px;
+        }
+        
+        .price-item {
+            background: #f9f9f9;
+            padding: 25px;
+            margin-bottom: 20px;
+            border-radius: 15px;
+            border-left: 5px solid #667eea;
+            transition: all 0.3s ease;
+        }
+        
+        .price-item:hover {
+            background: #f0f0f0;
+        }
+        
+        .price-item h3 {
+            font-size: 1.6rem;
+            margin-bottom: 10px;
+            color: #667eea;
+        }
+        
+        .price-item p {
+            color: #666;
+            margin-bottom: 15px;
+            font-size: 1.1rem;
+        }
+        
+        /* Robux Calculator */
+        .robux-calculator {
+            background: #f9f9f9;
+            padding: 30px;
+            border-radius: 15px;
+            margin-top: 25px;
+            border: 1px solid #e0e0e0;
+        }
+        
+        .calculator-input {
+            width: 100%;
+            padding: 18px;
+            background: white;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            font-size: 1.2rem;
+            margin-bottom: 25px;
+            transition: all 0.3s;
+            color: #333;
+        }
+        
+        .calculator-input:focus {
+            border-color: #667eea;
+            outline: none;
+            box-shadow: 0 0 15px rgba(102, 126, 234, 0.2);
+        }
+        
+        .robux-result {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            margin-top: 25px;
+            border: 1px solid #e0e0e0;
+        }
+        
+        /* Table Styling */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 25px 0;
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid #e0e0e0;
+        }
+        
+        th, td {
+            padding: 18px;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+        
+        th {
+            background-color: #667eea;
+            color: #fff;
+            font-weight: 600;
+        }
+        
+        tr:hover {
+            background-color: #f9f9f9;
+        }
+        
+        /* Game Sections */
+        .game-section {
+            margin-bottom: 40px;
+        }
+        
+        .game-section h3 {
+            font-size: 1.8rem;
+            color: #667eea;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+        
+        /* Notification */
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #4CAF50;
+            color: white;
+            padding: 15px 25px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            z-index: 1001;
+            display: none;
+            animation: slideInRight 0.5s ease;
+        }
+        
+        @keyframes slideInRight {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .container {
+                padding: 15px;
+            }
+            
+            .slide {
+                padding: 20px;
+                min-height: auto;
+            }
+            
+            .products {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+            
+            .header h1 {
+                font-size: 2.2rem;
+            }
+            
+            .whatsapp-float {
+                width: 60px;
+                height: 60px;
+                font-size: 2.2rem;
+                bottom: 20px;
+                right: 20px;
+            }
+            
+            .payment-methods {
+                grid-template-columns: 1fr;
+            }
+            
+            .btn-order {
+                margin: 10px 5px;
+                padding: 10px 20px;
+            }
+            
+            .copy-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .btn-copy, .btn-download {
+                margin: 5px 0;
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Notification -->
+    <div class="notification" id="notification">
+        <i class="fas fa-check-circle"></i> Berhasil disalin!
+    </div>
+    
+    <div class="container">
+        <!-- Slide 1: Main Menu -->
+        <div class="slide active" id="slide1">
+            <div class="header">
+                <h1>Shop Marketing Services</h1>
+                <p>Pilih layanan yang Anda butuhkan</p>
+            </div>
+            
+            <div class="products">
+                <div class="product-card">
+                    <div class="product-icon">
+                        <i class="fas fa-qrcode"></i>
+                    </div>
+                    <h2 class="product-title">Jasa Upgrade QRIS (Qiospay)</h2>
+                    <p class="product-desc">Upgrade QRIS Anda ke standar terbaru untuk transaksi yang lebih lancar dan aman dengan fitur lengkap.</p>
+                    <button class="btn" onclick="goToSlide(2)">Order</button>
+                </div>
+                
+                <div class="product-card">
+                    <div class="product-icon">
+                        <i class="fas fa-exchange-alt"></i>
+                    </div>
+                    <h2 class="product-title">Jasa Convert Saldo</h2>
+                    <p class="product-desc">Konversi saldo antar dompet digital dengan cepat, aman, dan biaya terjangkau.</p>
+                    <button class="btn" onclick="goToSlide(3)">Order</button>
+                </div>
+                
+                <div class="product-card">
+                    <div class="product-icon">
+                        <i class="fas fa-gamepad"></i>
+                    </div>
+                    <h2 class="product-title">Top Up Game & Robux</h2>
+                    <p class="product-desc">Top up diamond Free Fire, Mobile Legends, dan Robux dengan harga terbaik.</p>
+                    <button class="btn" onclick="goToSlide(4)">Order</button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Slide 2: Jasa Upgrade QRIS -->
+        <div class="slide" id="slide2">
+            <div class="header">
+                <h1>Jasa Upgrade QRIS</h1>
+                <p>Pilih jenis upgrade yang Anda butuhkan</p>
+            </div>
+            
+            <div class="price-list">
+                <div class="price-item">
+                    <h3>ALLREFF KALAU TIDAK CETAK 40K</h3>
+                    <p>Upgrade QRIS dengan semua referensi. Jika tidak tercetak, biaya hanya Rp 40.000</p>
+                    <button class="btn btn-order" onclick="goToPayment('Upgrade QRIS - Allreff Kalau Tidak Cetak 40K')">Order</button>
+                </div>
+                
+                <div class="price-item">
+                    <h3>NO REFF TIDAK CETAK 30K</h3>
+                    <p>Upgrade QRIS tanpa referensi. Jika tidak tercetak, biaya hanya Rp 30.000</p>
+                    <button class="btn btn-order" onclick="goToPayment('Upgrade QRIS - No Reff Tidak Cetak 30K')">Order</button>
+                </div>
+            </div>
+            
+            <div style="text-align: center;">
+                <button class="btn btn-back" onclick="goToSlide(1)">Kembali ke Menu Utama</button>
+            </div>
+        </div>
+        
+        <!-- Slide 3: Jasa Convert Saldo -->
+        <div class="slide" id="slide3">
+            <div class="header">
+                <h1>Jasa Convert Saldo</h1>
+                <p>Konversi saldo dompet digital dengan biaya terjangkau</p>
+            </div>
+            
+            <div class="price-list">
+                <div class="price-item">
+                    <h3>TO DANA Rp 500</h3>
+                    <p>Berlaku untuk nominal Rp 1.000 - Rp 200.000</p>
+                    <button class="btn btn-order" onclick="goToPayment('Convert Saldo - TO DANA Rp 500')">Order</button>
+                </div>
+                
+                <div class="price-item">
+                    <h3>TO GOPAY</h3>
+                    <p><strong>Rp 1.000</strong> (berlaku untuk nominal Rp 10.000/Rp 15.000/Rp 20.000 - Rp 500.000)</p>
+                    <p><strong>Rp 1.500</strong> (berlaku untuk nominal Rp 1.000 - Rp 9.000)</p>
+                    <p><strong>Rp 2.500</strong> (berlaku untuk nominal Rp 10.000 - Rp 13.000)</p>
+                    <p><strong>Rp 3.500</strong> (berlaku untuk nominal Rp 14.000 - Rp 17.000)</p>
+                    <button class="btn btn-order" onclick="goToPayment('Convert Saldo - TO GOPAY')">Order</button>
+                </div>
+                
+                <div class="price-item">
+                    <h3>TO SHOPEEPAY</h3>
+                    <p><strong>Rp 500</strong> (berlaku untuk nominal Rp 1.000-Rp 4.000/Rp 10.000/Rp 20.000- Rp 200.000)</p>
+                    <p><strong>Rp 700</strong> (berlaku untuk nominal Rp 5.000 - Rp 9.000)</p>
+                    <p><strong>Rp 2.000</strong> (berlaku untuk nominal Rp 11.000 - Rp 19.000)</p>
+                    <button class="btn btn-order" onclick="goToPayment('Convert Saldo - TO SHOPEEPAY')">Order</button>
+                </div>
+                
+                <div class="price-item">
+                    <h3>TO OVO Rp 500</h3>
+                    <p>Berlaku untuk nominal Rp 10.000 - Rp 200.000</p>
+                    <button class="btn btn-order" onclick="goToPayment('Convert Saldo - TO OVO Rp 500')">Order</button>
+                </div>
+            </div>
+            
+            <div style="text-align: center;">
+                <button class="btn btn-back" onclick="goToSlide(1)">Kembali ke Menu Utama</button>
+            </div>
+        </div>
+        
+        <!-- Slide 4: Top Up -->
+        <div class="slide" id="slide4">
+            <div class="header">
+                <h1>Top Up Game & Robux</h1>
+                <p>Top up game favorit Anda dengan harga terbaik</p>
+            </div>
+            
+            <div class="game-section">
+                <h3>FREE FIRE</h3>
+                <p>Diamond ke whatsapp saja</p>
+                <table>
+                    <tr>
+                        <th>Item</th>
+                        <th>Harga</th>
+                    </tr>
+                    <tr>
+                        <td>Membership Mingguan</td>
+                        <td>Rp 27.000</td>
+                    </tr>
+                    <tr>
+                        <td>Membership Mingguan 2x</td>
+                        <td>Rp 52.800</td>
+                    </tr>
+                    <tr>
+                        <td>Membership Bulanan</td>
+                        <td>Rp 79.000</td>
+                    </tr>
+                    <tr>
+                        <td>Membership Bulanan 2x</td>
+                        <td>Rp 154.500</td>
+                    </tr>
+                </table>
+                <button class="btn btn-order" onclick="goToPayment('Top Up - FREE FIRE')">Order</button>
+            </div>
+            
+            <div class="game-section">
+                <h3>MOBILE LEGENDS BANG BANG</h3>
+                <p>Ke whatsapp saja chat list-nya</p>
+                <button class="btn btn-order" onclick="goToPayment('Top Up - MOBILE LEGENDS')">Order</button>
+            </div>
+            
+            <div class="game-section">
+                <h3>ROBLOX/ROBUX</h3>
+                <div class="robux-calculator">
+                    <h4>Kalkulator Robux</h4>
+                    <p>Masukkan jumlah Robux yang diinginkan:</p>
+                    <input type="number" id="robuxInput" class="calculator-input" placeholder="Contoh: 100" min="1" oninput="calculateRobux()">
+                    
+                    <div class="robux-result" id="robuxResult">
+                        <h4>Hasil Perhitungan:</h4>
+                        <p id="robuxCalcResult">Masukkan jumlah Robux di atas</p>
+                    </div>
+                    
+                    <h4>Tabel Harga Robux</h4>
+                    <table id="robuxTable">
+                        <tr>
+                            <th>Jumlah Robux</th>
+                            <th>Harga</th>
+                            <th>Keterangan</th>
+                        </tr>
+                    </table>
+                </div>
+                <button class="btn btn-order" onclick="goToPayment('Top Up - ROBLOX/ROBUX')">Order</button>
+            </div>
+            
+            <div style="text-align: center;">
+                <button class="btn btn-back" onclick="goToSlide(1)">Kembali ke Menu Utama</button>
+            </div>
+        </div>
+        
+        <!-- Slide 5: Payment -->
+        <div class="slide" id="slide5">
+            <div class="header">
+                <h1>Pembayaran</h1>
+                <p id="payment-title">Lakukan pembayaran ke salah satu metode di bawah</p>
+            </div>
+            
+            <div class="payment-methods">
+                <div class="payment-method">
+                    <div class="payment-icon">
+                        <i class="fab fa-google-wallet"></i>
+                    </div>
+                    <h3>DANA</h3>
+                    <div class="payment-number">
+                        <span id="danaNumber">088708389165</span>
+                    </div>
+                    <div class="copy-buttons">
+                        <button class="btn btn-copy" onclick="copyToClipboard('danaNumber')">
+                            <i class="fas fa-copy"></i> Salin
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="payment-method">
+                    <div class="payment-icon">
+                        <i class="fab fa-google-pay"></i>
+                    </div>
+                    <h3>GoPay</h3>
+                    <div class="payment-number">
+                        <span id="gopayNumber">088708389165</span>
+                    </div>
+                    <div class="copy-buttons">
+                        <button class="btn btn-copy" onclick="copyToClipboard('gopayNumber')">
+                            <i class="fas fa-copy"></i> Salin
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="payment-method">
+                    <div class="payment-icon">
+                        <i class="fas fa-qrcode"></i>
+                    </div>
+                    <h3>QRIS</h3>
+                    <div class="qris-container">
+                        <img src="https://files.catbox.moe/avjtfl.jpg" 
+                             alt="QRIS Code" 
+                             class="qris-image"
+                             id="qrisImage"
+                             onerror="this.onerror=null; this.src='https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=https://wa.me/6282174301182&bgcolor=ffffff&color=667eea&qzone=1'">
+                    </div>
+                    <div class="copy-buttons">
+                        <button class="btn btn-download" onclick="downloadQRIS()">
+                            <i class="fas fa-download"></i> Download
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <div style="text-align: center; margin-top: 40px;">
+                <p style="color: #666; margin-bottom: 25px; font-size: 1.1rem;">
+                    Setelah melakukan pembayaran, harap konfirmasi melalui WhatsApp dengan mengklik tombol di pojok kanan bawah.
+                </p>
+                <button class="btn btn-back" onclick="goToSlide(1)">Kembali ke Menu Utama</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- WhatsApp Float Button -->
+    <a href="https://wa.me/6282174301182" class="whatsapp-float" target="_blank">
+        <i class="fab fa-whatsapp"></i>
+    </a>
+
+    <script>
+        // Navigasi antar slide
+        function goToSlide(slideNumber) {
+            // Sembunyikan semua slide
+            const slides = document.querySelectorAll('.slide');
+            slides.forEach(slide => {
+                slide.classList.remove('active');
+            });
+            
+            // Tampilkan slide yang dipilih
+            document.getElementById(`slide${slideNumber}`).classList.add('active');
+            
+            // Scroll ke atas
+            window.scrollTo(0, 0);
+        }
+        
+        // Navigasi ke halaman pembayaran
+        function goToPayment(productName) {
+            // Sembunyikan semua slide
+            const slides = document.querySelectorAll('.slide');
+            slides.forEach(slide => {
+                slide.classList.remove('active');
+            });
+            
+            // Tampilkan slide pembayaran
+            document.getElementById('slide5').classList.add('active');
+            
+            // Update judul pembayaran
+            document.getElementById('payment-title').textContent = `Pembayaran untuk: ${productName}`;
+            
+            // Scroll ke atas
+            window.scrollTo(0, 0);
+        }
+        
+        // Salin ke clipboard
+        function copyToClipboard(elementId) {
+            const element = document.getElementById(elementId);
+            const text = element.textContent;
+            
+            // Buat textarea sementara
+            const textarea = document.createElement('textarea');
+            textarea.value = text;
+            document.body.appendChild(textarea);
+            
+            // Pilih dan salin teks
+            textarea.select();
+            document.execCommand('copy');
+            
+            // Hapus textarea sementara
+            document.body.removeChild(textarea);
+            
+            // Tampilkan notifikasi
+            showNotification('Nomor berhasil disalin ke clipboard!');
+        }
+        
+        // Download QRIS
+        function downloadQRIS() {
+            const qrisImage = document.getElementById('qrisImage');
+            const link = document.createElement('a');
+            link.href = qrisImage.src;
+            link.download = 'qris-payment.jpg';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            
+            showNotification('QRIS berhasil diunduh!');
+        }
+        
+        // Tampilkan notifikasi
+        function showNotification(message) {
+            const notification = document.getElementById('notification');
+            notification.innerHTML = `<i class="fas fa-check-circle"></i> ${message}`;
+            notification.style.display = 'block';
+            
+            // Sembunyikan notifikasi setelah 3 detik
+            setTimeout(() => {
+                notification.style.display = 'none';
+            }, 3000);
+        }
+        
+        // Kalkulator Robux dengan perhitungan yang tepat
+        function calculateRobux() {
+            const robuxInput = document.getElementById('robuxInput').value;
+            const robuxResult = document.getElementById('robuxCalcResult');
+            const robuxTable = document.getElementById('robuxTable');
+            
+            if (!robuxInput || robuxInput <= 0) {
+                robuxResult.innerHTML = "Masukkan jumlah Robux di atas";
+                updateRobuxTable([]);
+                return;
+            }
+            
+            // Hitung robux setelah dipotong 30%
+            const robuxAfterCut = Math.floor(robuxInput * 0.7);
+            
+            // Hitung harga berdasarkan rumus: Rp 12.000 per 100 robux + sisa dikali Rp 125
+            const base100 = Math.floor(robuxInput / 100);
+            const remainder = robuxInput % 100;
+            let totalPrice;
+            
+            if (base100 > 0) {
+                // Harga untuk setiap 100 robux
+                const priceFor100s = base100 * 12000;
+                // Harga untuk sisa robux (1-99)
+                const priceForRemainder = remainder * 125;
+                totalPrice = priceFor100s + priceForRemainder;
+            } else {
+                // Jika kurang dari 100 robux
+                totalPrice = robuxInput * 125;
+            }
+            
+            // Format angka ke Rupiah
+            const formatRupiah = (number) => {
+                return new Intl.NumberFormat('id-ID', {
+                    style: 'currency',
+                    currency: 'IDR',
+                    minimumFractionDigits: 0
+                }).format(number);
+            };
+            
+            robuxResult.innerHTML = `
+                <p><strong>Robux yang dimasukkan:</strong> ${robuxInput} Robux</p>
+                <p><strong>Setelah potongan 30%:</strong> ${robuxAfterCut} Robux</p>
+                <p><strong>Perkiraan harga:</strong> ${formatRupiah(totalPrice)}</p>
+                <p><em>* Harga aktual mungkin berbeda, konfirmasi via WhatsApp</em></p>
+            `;
+            
+            // Update tabel dengan contoh harga
+            updateRobuxTable([
+                { robux: 1, price: 125 },
+                { robux: 10, price: 1250 },
+                { robux: 50, price: 6250 },
+                { robux: 100, price: 12000 },
+                { robux: 150, price: 18000 + (50 * 125) }, // 100x120 + 50x125
+                { robux: 200, price: 24000 },
+                { robux: 500, price: 60000 },
+                { robux: robuxInput, price: totalPrice, isCustom: true }
+            ]);
+        }
+        
+        // Update tabel harga robux
+        function updateRobuxTable(data) {
+            const robuxTable = document.getElementById('robuxTable');
+            let tableHTML = `
+                <tr>
+                    <th>Jumlah Robux</th>
+                    <th>Harga</th>
+                    <th>Keterangan</th>
+                </tr>
+            `;
+            
+            data.forEach(item => {
+                const formatRupiah = (number) => {
+                    return new Intl.NumberFormat('id-ID', {
+                        style: 'currency',
+                        currency: 'IDR',
+                        minimumFractionDigits: 0
+                    }).format(number);
+                };
+                
+                let keterangan = "Standar";
+                if (item.isCustom) {
+                    keterangan = "Custom (masukan Anda)";
+                } else if (item.robux >= 100) {
+                    const base100 = Math.floor(item.robux / 100);
+                    const remainder = item.robux % 100;
+                    if (remainder > 0) {
+                        keterangan = `${base100} × Rp 12.000 + ${remainder} × Rp 125`;
+                    } else {
+                        keterangan = `${base100} × Rp 12.000`;
+                    }
+                }
+                
+                tableHTML += `
+                    <tr ${item.isCustom ? 'style="background-color: #e8f4fd;"' : ''}>
+                        <td>${item.robux} Robux</td>
+                        <td>${formatRupiah(item.price)}</td>
+                        <td>${keterangan}</td>
+                    </tr>
+                `;
+            });
+            
+            robuxTable.innerHTML = tableHTML;
+        }
+        
+        // Inisialisasi saat halaman dimuat
+        document.addEventListener('DOMContentLoaded', function() {
+            // Tambahkan event listener untuk input Robux
+            document.getElementById('robuxInput').addEventListener('input', calculateRobux);
+            
+            // Tampilkan slide pertama
+            goToSlide(1);
+            
+            // Inisialisasi tabel robux dengan contoh data
+            updateRobuxTable([
+                { robux: 1, price: 125 },
+                { robux: 10, price: 1250 },
+                { robux: 50, price: 6250 },
+                { robux: 100, price: 12000 },
+                { robux: 150, price: 18000 + (50 * 125) }
+            ]);
+            
+            // Tambahkan animasi untuk semua tombol order
+            const orderButtons = document.querySelectorAll('.btn-order');
+            orderButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    this.style.transform = 'scale(0.95)';
+                    setTimeout(() => {
+                        this.style.transform = 'scale(1)';
+                    }, 150);
+                });
+            });
+        });
+    </script>
+</body>
+</html>
